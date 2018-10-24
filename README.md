@@ -29,5 +29,6 @@
 **本地运行**
 
 - 通过git下载源码
+- 导入pom.xml构建项目
 - 修改application.yml文件，配置数据库账号和密码
 - 在secu-generator目录下，执行mvn clean install
