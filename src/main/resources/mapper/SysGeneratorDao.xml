@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.secu.dao.SysGeneratorDao">
+    <select id="queryList" resultType="map">
+        SELECT d.* FROM
+        (SELECT c.*,ROWNUM rn FROM
+        (select
+        a.table_name AS "tableName",
+        a.last_analyzed AS "createTime",
+        a.tablespace_name AS "engine",
+        b.comments AS "tableComment"
+        from user_tables a LEFT JOIN user_tab_comments b ON a.table_name = b.table_name
+        ORDER BY a.last_analyzed DESC) c
+        <if test="offset != null and limit != null">
+            WHERE ROWNUM &lt;<!--小于号转义符-->= (#{offset}+1)*#{limit}
+        </if>
+        ) d
+        <if test="offset != null and limit != null">
+            WHERE d.RN>=#{offset}*#{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select COUNT(*) from user_tables
+        <if test="tableName != null and tableName.trim() != ''">
+            where table_name like concat('%', #{tableName}, '%')
+        </if>
+    </select>
+
+    <select id="queryTable" resultType="map">
+        select
+        a.table_name AS "tableName",
+        a.last_analyzed AS "createTime",
+        a.tablespace_name AS "engine",
+        b.comments AS "tableComment"
+        from user_tables a LEFT JOIN user_tab_comments b ON a.table_name = b.table_name
+        where a.table_name = #{tableName}
+	</select>
+
+    <select id="queryColumns" resultType="map">
+		SELECT a.COLUMN_NAME AS "columnName",a.COMMENTS AS "columnComment",b.DATA_TYPE AS "dataType" FROM (SELECT * FROM user_col_comments WHERE TABLE_NAME = #{tableName}) a LEFT JOIN (select COLUMN_NAME,DATA_TYPE from all_tab_columns WHERE TABLE_NAME = #{tableName}) b ON a.COLUMN_NAME = b.COLUMN_NAME
+	</select>
+</mapper>
