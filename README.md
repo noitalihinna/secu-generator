@@ -2,6 +2,7 @@
 项目代码生成器
 <br/>
 **项目结构** 
+```
 ├─secu-generator  代码生成器
 |       └─resources 
 |          ├─mapper   MyBatis文件
