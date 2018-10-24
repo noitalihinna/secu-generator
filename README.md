@@ -16,7 +16,7 @@
 |          ├─template 代码生成器模板（可增加或修改相应模板）
 |          ├─application.yml    全局配置文件
 |          └─generator.properties   代码生成器，配置文件
-
+```
 <br/>
 
 **运行环境** 
